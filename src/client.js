@@ -1,18 +1,19 @@
-
 const xmlrpc = require('xmlrpc');
 var readlineSync = require('readline-sync');
 
-var client = xmlrpc.createClient("http://9783-177-131-164-62.ngrok.io")
-var client2 = xmlrpc.createClient({ host: 'localhost', port: 9090 })
+var receiver = xmlrpc.createClient("http://9783-177-131-164-62.ngrok.io")
+var myServer = xmlrpc.createClient({ host: 'localhost', port: 9090 })
+
+function sendServer(userName, msg) {
+    [receiver,myServer].forEach((client) => {
+        client.methodCall('send', [userName, msg])
+    })
+}
 
 function sendMessage(userName) {
     var msg = readlineSync.question('#:');
-    client2.methodCall('anAction', [userName, msg], function (error, value) {
-    });
+    sendServer(userName, msg);
     
-    client.methodCall('anAction', [userName, msg], function (error, value) {
-    });
-
     setTimeout(function(){ // espera 0.5 segundo para enviar a proxima mensagem So assim que funciona
         sendMessage(userName);
     }, 500);

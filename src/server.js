@@ -2,11 +2,11 @@ var xmlrpc = require('xmlrpc')
  
 var server = xmlrpc.createServer({ host: 'localhost', port: 9090 })
 
-server.on('anAction', function (err, params, callback) {
+server.on('send', function (err, params) {
     const userName = params[0]; 
     const msg = params[1];
     console.log(`${userName}: ${msg}`)
 
-    callback(null, 'aResult')
+    err && console.log(err) 
 })
-console.log('XML-RPC server listening on port 9091')
+console.log('Servidor rodando')
