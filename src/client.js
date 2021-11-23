@@ -28,23 +28,29 @@ function sendMessage(userName) {
     }, 500);
 }
 
+function sendContacts() {
+    receiver.forEach((client) => {
+        client.methodCall('sendContacts', contacts)
+    })
+}
+
 function Client() {
 
-    const options = [["send", "Enviar mensagens para lista de contatos"], ["sendContacts", "Enviar lista de contatos"]]
+    const options = [["Enviar mensagens para lista de contatos"], ["Enviar lista de contatos"]]
     
     var OptionsSelected = readlineSync.keyInSelect(options, 'Selecione uma opcao:');
-
-    if(OptionsSelected == 0) {
     var inputSelected = readlineSync.keyInSelect(contacts, 'Selecione um contato:');
     var selectedContact = contacts[inputSelected];
-    
+
+    if(OptionsSelected == 0) {
         if (inputSelected !== -1) {
             var userName = readlineSync.question('Nome de usuario:');
             receiverContact(selectedContact)
             sendMessage(userName);
         }
     } else {
-        myServer.methodCall('sendContacts', contacts);
+        receiverContact(selectedContact)
+        sendContacts()
     }
 
     
