@@ -3,8 +3,6 @@ var fs = require('fs')
  
 var server = xmlrpc.createServer({ host: 'localhost', port: 9090 })
 
-var contactsFile= fs.readFileSync('contacts.txt', 'utf8').split('\n');
-
 server.on('send', function (err, params) {
     const userName = params[0];
     const msg = params[1];
@@ -14,28 +12,14 @@ server.on('send', function (err, params) {
 })
 
 server.on('sendContacts', function (err, params) {
-    const userName = []
-    const userNameFile = []
-    const url = []
-    params.forEach(contact => {
-        userName.push(contact[0])
-        userNameFile.push(contact[0])
-    })
-
-    const diference = userName.filter(contact => !userNameFile.includes(contact))
-
-    diference.forEach(contactuser => {
-        params.forEach(contact => {
-            if (contact[0] === contactuser) {
-                url.push(contact[1])
-            }
-        })
-    })
-
-    console.log(`${diference}: ${url}`)
-
-
-
+    var contactsFile= fs.readFileSync('contacts.txt', 'utf8').split('\n');
+    var contacts= contactsFile.map(contact => contact.split(' ')[0]);
     
+    params.forEach(element => {
+        if(!contacts.includes(element[0])){
+            fs.appendFileSync('contacts.txt', `${element[0]} ${element[1]}\n`);
+            console.log(`${element[0]} foi adicionado em sua lista de contatos`);
+        }
+    })
 })
 console.log('Servidor rodando')
